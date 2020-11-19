@@ -1,11 +1,9 @@
-//import 'dart:io';
+import 'package:lib_bible/main.dart';
+import 'package:lib_bible/login.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-//import 'package:flutter/cupertino.dart';
-//import 'package:dio/src/response.dart';
-import 'package:http/http.dart' as http;
-import 'package:sliver_list_test/main.dart';
 
 const _Api_PREFIX = '127.0.0.1:8080/auth/login';
 const _Api_list = '127.0.0.1:8080/users/library';
@@ -27,9 +25,10 @@ class Server {
     var code = response.statusCode;
     headerkey = response.headers['authorization'];
 
-    if (response.statusCode == 200) {
-      return 1;
-    }
+    http.Response response3 = await http.get(_Api_list,
+        headers: {"authorization": response.headers['authorization']});
+    return jsonDecode(response3.body);
+    if (response.statusCode == 200) {}
 
     //return (response.headers['authorization']);
     /* var result = jsonDecode(response2.body);

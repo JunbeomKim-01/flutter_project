@@ -1,6 +1,7 @@
+import 'package:lib_bible/main.dart';
 import 'package:flutter/material.dart';
-import 'package:sliver_list_test/dio_server.dart';
-import 'package:sliver_list_test/main.dart';
+import 'package:lib_bible/server.dart';
+import 'package:lib_bible/homepage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -71,17 +72,7 @@ class _State extends State<LoginPage> {
                                 CustomRoute(
                                     builder: (context) => MyHomePage()));
                           }
-                          //로그인 버튼 클릭시 이벤트
-                          /*if (server.postReq(
-                                nameController, passwordController) ==
-                            200) {
-                          Navigator.push(context,
-                              CustomRoute(builder: (context) => Home()));*/
-                        }
-                        /*print(nameController.text);
-                        print(passwordController.text);*/
-
-                        )),
+                        })),
               ],
             )));
   }
