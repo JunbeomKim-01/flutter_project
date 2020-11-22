@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:sliver_list_test/dio_server.dart';
 import 'package:sliver_list_test/main.dart';
 
+final TextEditingController nameController = new TextEditingController();
+final TextEditingController passwordController = new TextEditingController();
+
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _State();
 }
 
 class _State extends State<LoginPage> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,14 +63,11 @@ class _State extends State<LoginPage> {
                         color: Colors.blue,
                         child: Text('Login'),
                         onPressed: () {
-                          if (server.postReq(
-                                  nameController, passwordController) ==
-                              1) {
-                            Navigator.push(
-                                context,
-                                CustomRoute(
-                                    builder: (context) => MyHomePage()));
-                          }
+                          server.postReq(nameController, passwordController);
+
+                          Navigator.push(context,
+                              CustomRoute(builder: (context) => MyHomePage()));
+
                           //로그인 버튼 클릭시 이벤트
                           /*if (server.postReq(
                                 nameController, passwordController) ==
