@@ -6,7 +6,6 @@
     "configurations": [
         {
             "name": "bible_bot",
-            "cwd": "bible_bot",
             "request": "launch",
             "type": "dart"
         }

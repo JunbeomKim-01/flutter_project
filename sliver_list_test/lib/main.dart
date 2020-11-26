@@ -50,17 +50,17 @@ class recommand {
 }
 
 class Post {
-  final String head;
-  final String body;
+  final String meta;
+  final String error;
   Post({
-    this.head,
-    this.body,
+    this.meta,
+    this.error,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-      head: json['head'].toString(),
-      body: json['body'].toString(),
+      meta: json['meta'].toString(),
+      error: json['error'].toString(),
     );
   }
 }
@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Get> books;
   final List<book> _allbooks = book.allbooks();
   final List<recommand> _reBooks = recommand.rebooks();
-
+  var userbooks = Post();
   _MyHomePageState(this.books);
 
   @override
@@ -209,143 +209,159 @@ class _MyHomePageState extends State<MyHomePage> {
     BuildContext context,
   ) {
     print(books);
-    return Scaffold(
-      backgroundColor: Colors.lightBlue[50],
-      appBar: AppBar(
-        elevation: 1,
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                '도서관 ',
-                style: TextStyle(
-                  color: Colors.black,
+    return FutureBuilder(
+      future: post(nameController.text, passwordController.text),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            backgroundColor: Colors.lightBlue[50],
+            appBar: AppBar(
+              elevation: 1,
+              iconTheme: IconThemeData(color: Colors.black),
+              backgroundColor: Colors.white,
+              title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      '도서관 ',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ]),
+              shadowColor: Colors.black,
+            ),
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '추천도서',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ]),
-        shadowColor: Colors.black,
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            '추천도서',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Flexible(
-            flex: 3,
-            child: Swiper(
-              containerHeight: 10.0,
-              autoplay: true,
-              itemWidth: MediaQuery.of(context).size.width * 0.32,
-              itemHeight: MediaQuery.of(context).size.height * 0.4,
-              viewportFraction: 0.8,
-              layout: SwiperLayout.STACK,
-              pagination: SwiperPagination(alignment: Alignment.bottomRight),
-              itemCount: _reBooks.length,
-              itemBuilder: (BuildContext context, int index) => Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    //server.getReq(headerkey.toString());
-                    _showSnackBar(context, _reBooks[index], index, books);
-                    // _PostRequest();
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Container(
-                      height: 140.0,
-                      width: 200.0,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(_reBooks[index].images),
-                              fit: BoxFit.fill)),
+                Flexible(
+                  flex: 3,
+                  child: Swiper(
+                    containerHeight: 10.0,
+                    autoplay: true,
+                    itemWidth: MediaQuery.of(context).size.width * 0.32,
+                    itemHeight: MediaQuery.of(context).size.height * 0.4,
+                    viewportFraction: 0.8,
+                    layout: SwiperLayout.STACK,
+                    pagination:
+                        SwiperPagination(alignment: Alignment.bottomRight),
+                    itemCount: _reBooks.length,
+                    itemBuilder: (BuildContext context, int index) => Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          //server.getReq(headerkey.toString());
+                          _showSnackBar(context, _reBooks[index], index, books);
+                          // _PostRequest();
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Container(
+                            height: 140.0,
+                            width: 200.0,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(_reBooks[index].images),
+                                    fit: BoxFit.fill)),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          /* Text(
-            '도서 대출 현황',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),*/
-          Flexible(
-            flex: 7,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 4,
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        width: 100.0,
-                        height: 135.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(_allbooks[index].image,
-                              fit: BoxFit.fill, height: 130.0, width: 100.0),
+                Flexible(
+                  flex: 7,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            new Text(
-                              _allbooks[index].name,
-                              style: TextStyle(
-                                  fontSize: 18.0, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
                             Container(
-                              child: Column(children: <Widget>[
-                                Text(
-                                  '대출일 : ${_allbooks[index].borrowday}',
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontStyle: FontStyle.italic),
-                                ),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Container(
-                                  child: Text(
-                                    '반납일: ${_allbooks[index].retrunday}',
+                              width: 100.0,
+                              height: 135.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image.asset(_allbooks[index].image,
+                                    fit: BoxFit.fill,
+                                    height: 130.0,
+                                    width: 100.0),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  new Text(
+                                    userbooks.error,
                                     style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontStyle: FontStyle.italic),
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                              ]),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Container(
+                                    child: Column(children: <Widget>[
+                                      Text(
+                                        '대출일 : ${_allbooks[index].borrowday}',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                      SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '반납일: ${_allbooks[index].retrunday}',
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+              child: Container(
+                  width: 30.0,
+                  height: 40.0,
+                  child: Text('${snapshot.hasError}')));
+        }
+        //return CircularProgressIndicator();
+      },
     );
   }
 }
+
+List<dynamic> userBooks = new List();
 
 /*_PostRequest() async {
   String url = 'http://192.210.110.7:8080/lib/api';

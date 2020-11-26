@@ -17,10 +17,9 @@ class Server {
     //print(jsonEncode({"user_id": "202004011", "user_pw": "85034011"}));
 
     //Post
-
+    await Future.delayed(Duration(seconds: 3));
     http.Response response =
         await http.post(_Api_PREFIX, body: jsonEncode({"id": id, "pw": pw}));
-    await Future.delayed(Duration(seconds: 3));
 
     print('세션 가져옴:' +
         response.headers['authorization'] +
@@ -28,6 +27,7 @@ class Server {
     print(response.headers);
     headerkey = response.headers['authorization'];
 
+/*
     http.Response response1 = await http.get(Uri.encodeFull(_Api_list),
         headers: {"authorization": response.headers['authorization']});
     await Future.delayed(Duration(seconds: 3));
@@ -39,7 +39,7 @@ class Server {
     print(result["data"]);
     print(result["data"]["body"]);
     Post.fromJson(jsonDecode(result["data"]["body"]));*/
-    //post.fromjson으로
+    //post.fromjson으로*/
   }
 
   Future<dynamic> getReq(headers) async {

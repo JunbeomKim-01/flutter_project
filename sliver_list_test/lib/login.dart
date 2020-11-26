@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:sliver_list_test/dio_server.dart';
 import 'package:sliver_list_test/main.dart';
+import 'package:http/http.dart' as http;
 
-final TextEditingController nameController = new TextEditingController();
-final TextEditingController passwordController = new TextEditingController();
+import 'main.dart';
+
+final nameController = TextEditingController();
+final passwordController = TextEditingController();
 
 class LoginPage extends StatefulWidget {
   @override
@@ -55,6 +58,9 @@ class _State extends State<LoginPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 30,
+                ),
                 Container(
                     height: 50,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -63,8 +69,8 @@ class _State extends State<LoginPage> {
                         color: Colors.blue,
                         child: Text('Login'),
                         onPressed: () {
-                          server.postReq(nameController, passwordController);
-
+                          //server.postReq(nameController, passwordController);
+                          post(nameController.text, passwordController.text);
                           Navigator.push(context,
                               CustomRoute(builder: (context) => MyHomePage()));
 
@@ -82,4 +88,20 @@ class _State extends State<LoginPage> {
               ],
             )));
   }
+}
+
+Future<dynamic> post(id, pw) async {
+  await Future.delayed(Duration(seconds: 3));
+  final response = await http.post('http://192.168.25.1:8080/auth/login',
+      body: jsonEncode({"id": id, "pw": pw}));
+  //print(jsonDecode(response.headers['authorization']));
+
+  //await Future.delayed(Duration(seconds: 3));
+  final response1 = await http.get('http://192.168.25.1:8080/users/library',
+      headers: {'Authorization': response.headers['authorization']});
+  print(response1.body);
+  var result = response1.body;
+  Post.fromJson(jsonDecode(result));
+  //String jsondata = jsonDecode(response1.headers.toString());
+  //print(jsondata);
 }
