@@ -4,6 +4,7 @@ import 'package:bible_bot/models/style_model.dart';
 import 'package:bible_bot/screens/body_screens/home_screens/developer_screen.dart';
 import 'package:bible_bot/screens/body_screens/home_screens/schedule.dart';
 import 'package:bible_bot/screens/body_screens/home_screens/school_news.dart';
+import 'package:bible_bot/screens/body_screens/home_screens/lib.dart';
 import 'package:bible_bot/screens/popup_menu/license.dart';
 import 'package:bible_bot/screens/popup_menu/setting_list/theme.dart';
 import 'package:bible_bot/util/show_amount.dart';
@@ -691,7 +692,65 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: Container(),
+                                child: RaisedButton(
+                                  highlightElevation: 0,
+                                  highlightColor: styleModel
+                                      .getBackgroundColor()['highLightColor'],
+                                  focusElevation: 0,
+                                  elevation: 0,
+                                  splashColor: styleModel
+                                      .getBackgroundColor()['splashColor'],
+                                  color: Colors.transparent,
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      new MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MultiProvider(providers: [
+                                          Provider<StyleModel>.value(
+                                              value: StyleModel(context,
+                                                  currentTheme: themeData)),
+                                          Provider<String>.value(
+                                              value: themeData),
+                                        ], child: Lib()),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Flexible(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            child: Icon(
+                                              Icons.local_library,
+                                              size: styleModel.getContextSize()[
+                                                  'bigIconSize'],
+                                              color:
+                                                  Colors.lightGreenAccent[900],
+                                            ),
+                                          ),
+                                        ),
+                                        Flexible(
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            child: Text(
+                                              "도서관",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: styleModel.getTextStyle()[
+                                                  'bodyTextStyle'],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bible_bot/api/api_info.dart';
+import 'package:bible_bot/models/lib.dart';
 import 'package:bible_bot/models/studyLog.dart';
 import 'package:bible_bot/util/storage.dart';
 import 'package:http/http.dart' as http;
@@ -9,8 +10,11 @@ import '../util/http_data_process.dart';
 
 class Api {
   final String _url = ApiInfo.url;
+  final String _uri = ApiInfo.testurl;
   var auth;
   var response;
+  static String id;
+  static String pw;
   Map<String, dynamic> result = {};
   Map<String, dynamic> jwt;
   Map<String, String> body = {};
@@ -37,6 +41,8 @@ class Api {
   // 로그인 요청
   Future<Map<String, dynamic>> getLoginAuth(String id, String pw) async {
     body = {'id': id, 'pw': pw};
+    id = body['id'];
+    pw = body['pw'];
     try {
       response = await http
           .post('$_url/auth/login', body: convert.jsonEncode(body))
@@ -113,6 +119,23 @@ class Api {
         headers: header);
 
     return await HttpDataPorcess.auth(response, kind: requestType);
+  }
+
+  //테스트 로그인 요청
+
+  //도서관 요청
+  Future<Map<String, dynamic>> getlib(String id, String pw) async {
+    body = {'id': id, 'pw': pw};
+    requestType = 'lib';
+    response = await http
+        .post('$_uri/auth/login', body: convert.jsonEncode(body))
+        .timeout(const Duration(seconds: 3));
+    header = {'Authorization': response.headers['authorization']};
+
+    var response1 = await http.get('$_uri/users/library', headers: header);
+    result = {'result': json.decode(response1.body)};
+    //Library.fromJson(json.decode(response1.body));
+    return result;
   }
 
   // chapel 요청

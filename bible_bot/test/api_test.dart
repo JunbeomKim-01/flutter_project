@@ -31,6 +31,11 @@ void main() {
       expect(result['result'], true);
     });
 
+    test('lib test', () async {
+      var result = await Api().getlib("ygflove95", "dms!15096");
+      print(result);
+    });
+
     test('chapel test', () async {
       var result = await Api().getChapel(semester: '20201');
       print(result);
